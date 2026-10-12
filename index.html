@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vivi e a Distância</title>
+    <style>
+       body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #e94560); /* Fundo misturando tecnologia (escuro) com romance (vermelho/rosa) */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        #app {
+            background-color: rgba(0, 0, 0, 0.7); /* Fundo do card semi-transparente */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #ff7eb3;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        h2 {
+            color: #ff7eb3;
+        }
+        
+        h3 {
+            color: #ffb6c1;
+            font-size: 18px;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            font-size: 16px;
+            color: #d1d1d1;
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            outline: none;
+            text-align: center;
+        }
+        
+        button {
+            background-color: #ff7eb3;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+        }
+        
+        button:hover {
+            background-color: #ff529a;
+            transform: scale(1.05); /* Faz o botão dar uma leve "crescida" ao passar o mouse */
+        }
+        
+        .pergunta {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+        
+        label:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Efeito ao passar o mouse nas respostas */
+        }
+        
+        #resultado-pontos {
+            font-size: 58px;
+            color: #ff7eb3;
+            margin: 10px 0;
+            text-shadow: 0 0 15px rgba(255, 126, 179, 0.5); /* Um brilho neon na nota final */
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Sistema: Vivi e a Distância v1.0 💻❤️</h1>
+        <p>Conexão estabelecida com sucesso!</p>
+
+        <!-- 1. TELA INICIAL -->
+        <div id="tela-inicial">
+            <label for="input-nome">Para iniciar, digite o seu nome:</label>
+            <br><br>
+            <input type="text" id="input-nome" placeholder="Digite seu nome">
+            <button onclick="iniciarSistema()">Acessar Sistema</button>
+        </div>
+
+        <!-- 2. TELA DO QUIZ (Escondida no início) -->
+        <div id="tela-quiz" style="display: none;">
+            <h2 id="saudacao"></h2>
+            <p>Responda às perguntas para calcularmos nossa sintonia!</p>
+            
+            <div class="pergunta">
+                <h3>1. O que você mais gosta em mim?</h3>
+                <label><input type="radio" name="p1" value="1"> Minha inteligência</label><br>
+                <label><input type="radio" name="p1" value="2"> Meu bíceps</label><br>
+                <label><input type="radio" name="p1" value="3"> Meus lindos olhos verdes</label><br>
+                <label><input type="radio" name="p1" value="4"> Minha safadeza</label>
+            </div>
+
+            <div class="pergunta">
+                <h3>2. O que faria primeiro quando nos encontrarmos?</h3>
+                <label><input type="radio" name="p2" value="1"> Correr, pular na minha cintura e me dar um abraço</label><br>
+                <label><input type="radio" name="p2" value="2"> Sair correndo por me achar feio</label><br>
+                <label><input type="radio" name="p2" value="3"> Ficar de olhos vidrados e travada no lugar</label><br>
+                <label><input type="radio" name="p2" value="4"> Rolar aquele beijo logo de cara</label>
+            </div>
+
+            <div class="pergunta">
+                <h3>3. Como a gente vence qualquer distância?</h3>
+                <label><input type="radio" name="p3" value="1"> Chamadas de vídeo e conversas todo dia</label><br>
+                <label><input type="radio" name="p3" value="2"> Mandando memes e codando juntos</label><br>
+                <label><input type="radio" name="p3" value="3"> Planejando nossa primeira viagem</label><br>
+                <label><input type="radio" name="p3" value="4"> Todas as alternativas anteriores!</label>
+            </div>
+
+            <br>
+            <button onclick="calcularSintonia()">Calcular Sintonia</button>
+        </div>
+
+        <!-- 3. TELA DE RESULTADO (Escondida no início) -->
+        <div id="tela-resultado" style="display: none;">
+            <h2>CALCULANDO NÍVEL DE SINTONIA...</h2>
+            <h1 id="resultado-pontos"></h1>
+            <p id="resultado-mensagem"></p>
+            <p><strong>A distância entre nossos estados não tem chance. ❤️</strong></p>
+        </div>
+    </div>
+
+    <script>
+      // Função para esconder a tela inicial e ir para o quiz
+        function iniciarSistema() {
+            const nome = document.getElementById('input-nome').value;
+            
+            // Verifica se o nome foi preenchido
+            if (nome.trim() === '') {
+                alert('Ei! Digite o seu nome para podermos começar!');
+                return;
+            }
+
+            // Muda as telas
+            document.getElementById('tela-inicial').style.display = 'none';
+            document.getElementById('tela-quiz').style.display = 'block';
+            
+            // Personaliza a saudação com o nome
+            document.getElementById('saudacao').innerText = 'Olá, ' + nome + '! Bem-vinda ao nosso código. :-)';
+        }
+
+        // Função que imita o seu VisuAlg para somar os pontos
+        function calcularSintonia() {
+            let pontos = 0;
+            let feedback = '';
+
+            // Lê as opções que a Vívian marcou
+            const resp1 = document.querySelector('input[name="p1"]:checked');
+            const resp2 = document.querySelector('input[name="p2"]:checked');
+            const resp3 = document.querySelector('input[name="p3"]:checked');
+
+            // Verifica se ela respondeu a todas as perguntas
+            if (!resp1 || !resp2 || !resp3) {
+                alert('Por favor, responda a todas as perguntas para calcularmos a nossa sintonia!');
+                return;
+            }
+
+            // --- Lógica da Pergunta 1 ---
+            switch (resp1.value) {
+                case '1':
+                    pontos += 25;
+                    feedback += '<p>-> A inteligência move o mundo (e o nosso código!).</p>';
+                    break;
+                case '2':
+                    pontos += 25;
+                    feedback += '<p>-> O treino tá pagando a conta, hein! 💪</p>';
+                    break;
+                case '3':
+                    pontos += 25;
+                    feedback += '<p>-> Impossível resistir a esse olhar!</p>';
+                    break;
+                case '4':
+                    pontos += 30;
+                    feedback += '<p>-> Eita! Pelo visto o clima esquentou por aqui! ;-)</p>';
+                    break;
+            }
+
+            // --- Lógica da Pergunta 2 ---
+            switch (resp2.value) {
+                case '1':
+                    pontos += 35;
+                    feedback += '<p>-> Já vou treinando a lombar pro impacto! ;-)</p>';
+                    break;
+                case '2':
+                    pontos += 5;
+                    feedback += '<p>-> Ei! Eu sou ajeitadinho, vai! Kkkk</p>';
+                    break;
+                case '3':
+                    pontos += 20;
+                    feedback += '<p>-> O famoso bug do sistema ao vivo!</p>';
+                    break;
+                case '4':
+                    pontos += 40;
+                    feedback += '<p>-> Sem perda de tempo! Gostei de ver! ❤️</p>';
+                    break;
+            }
+
+            // --- Lógica da Pergunta 3 ---
+            if (resp3.value === '4') {
+                pontos += 30;
+                feedback += '<p>-> Combo completo! Perfeito!</p>';
+            } else {
+                pontos += 25;
+                feedback += '<p>-> Ótima escolha!</p>';
+            }
+
+            // Esconde o quiz e mostra o resultado
+            document.getElementById('tela-quiz').style.display = 'none';
+            document.getElementById('tela-resultado').style.display = 'block';
+
+            // Mostra os pontos finais e as mensagens personalizadas
+            document.getElementById('resultado-pontos').innerText = pontos + '%';
+            document.getElementById('resultado-mensagem').innerHTML = 
+                feedback + '<br><strong>RESULTADO: Sintonia confirmada pelo algoritmo!</strong>';
+        }
+    </script>
+</body>
+</html>
